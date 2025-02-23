@@ -1,1 +1,4 @@
 http://host.docker.internal:11434
+
+
+https://docs.n8n.io/integrations/builtin/credentials/sendemail/gmail/
