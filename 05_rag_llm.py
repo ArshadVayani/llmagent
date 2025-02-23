@@ -1,4 +1,3 @@
-
 import faiss
 import numpy as np
 from openai import OpenAI
@@ -23,7 +22,7 @@ def get_embedding(text):
     return np.array(response.data[0].embedding).astype('float32')
 
 # Function to perform vector search
-def vector_search(query, top_k=1):
+def vector_search(query, top_k=4):
     query_embedding = get_embedding(query).reshape(1, -1)
     distances, indices = index.search(query_embedding, top_k)
     return [policy_texts[idx] for idx in indices[0]]
@@ -39,8 +38,9 @@ def chat_with_model(prompt):
 
 # Example usage
 if __name__ == "__main__":
-    user_query = "What type of items are eligible for return?"
-    search_results = vector_search(user_query)
-    combined_prompt = f"You are an online store customer service agent who answer customer query. Use context to answer the question.\n\nUser query: {user_query}\n\nContext: {search_results[0]}\n\nAnswer the query based on the information provided."
+    user_query = "What is the shipping policy of ABC Enterprises?"
+    search_results = vector_search(user_query, top_k=4)
+    combined_prompt = f"You are an online store customer service agent who answers customer queries. Use context to answer the question. Only answer based on the provided context. \n\nUser query: {user_query}\n\nContext:\n1. {search_results[0]}\n2. {search_results[1]}\n3. {search_results[2]}\n4. {search_results[3]}\n\nAnswer the query based on the information provided."
     response = chat_with_model(combined_prompt)
+    print(combined_prompt)
     print("Model Response:", response)
